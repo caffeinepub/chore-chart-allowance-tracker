@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque[opsz,wdth,wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/assets/fonts/Outfit[wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 1rem;
+
+    /* Sunny yellow primary */
+    --background: 0.98 0.012 95;
+    --foreground: 0.2 0.03 260;
+
+    --card: 1 0 0;
+    --card-foreground: 0.2 0.03 260;
+
+    --popover: 1 0 0;
+    --popover-foreground: 0.2 0.03 260;
+
+    /* Vibrant yellow */
+    --primary: 0.82 0.18 88;
+    --primary-foreground: 0.15 0.03 260;
+
+    /* Soft sky blue */
+    --secondary: 0.93 0.06 220;
+    --secondary-foreground: 0.2 0.05 230;
+
+    /* Muted warm */
+    --muted: 0.95 0.015 95;
+    --muted-foreground: 0.5 0.04 260;
+
+    /* Teal accent */
+    --accent: 0.88 0.12 185;
+    --accent-foreground: 0.15 0.05 200;
+
+    /* Coral destructive */
+    --destructive: 0.62 0.22 25;
+    --destructive-foreground: 1 0 0;
+
+    --border: 0.9 0.02 260;
+    --input: 0.92 0.02 260;
+    --ring: 0.75 0.15 88;
+
+    --chart-1: 0.82 0.18 88;
+    --chart-2: 0.7 0.18 185;
+    --chart-3: 0.62 0.22 25;
+    --chart-4: 0.75 0.18 145;
+    --chart-5: 0.68 0.2 300;
+
+    --sidebar: 0.96 0.015 95;
+    --sidebar-foreground: 0.2 0.03 260;
+    --sidebar-primary: 0.82 0.18 88;
+    --sidebar-primary-foreground: 0.15 0.03 260;
+    --sidebar-accent: 0.88 0.12 185;
+    --sidebar-accent-foreground: 0.15 0.05 200;
+    --sidebar-border: 0.9 0.02 260;
+    --sidebar-ring: 0.75 0.15 88;
+
+    /* Custom app tokens */
+    --kid-yellow: 0.88 0.19 92;
+    --kid-teal: 0.72 0.16 185;
+    --kid-coral: 0.68 0.2 25;
+    --kid-purple: 0.72 0.18 300;
+    --kid-green: 0.72 0.18 145;
+    --kid-sky: 0.78 0.14 220;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Outfit", sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Bricolage Grotesque", sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Bricolage Grotesque", sans-serif;
+  }
+
+  .font-body {
+    font-family: "Outfit", sans-serif;
+  }
+
+  .kid-card {
+    @apply bg-card rounded-2xl shadow-md border border-border;
+  }
+
+  .bubble-btn {
+    @apply rounded-full font-semibold transition-all active:scale-95;
+  }
+
+  .bouncy {
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .bouncy:hover {
+    transform: scale(1.05);
+  }
+
+  .confetti-bg {
+    background-image:
+      radial-gradient(circle at 20% 30%, oklch(0.95 0.08 88 / 0.4) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, oklch(0.95 0.06 185 / 0.35) 0%, transparent 40%),
+      radial-gradient(circle at 50% 10%, oklch(0.95 0.07 300 / 0.25) 0%, transparent 35%);
+  }
+}
