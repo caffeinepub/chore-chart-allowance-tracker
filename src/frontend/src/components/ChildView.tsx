@@ -269,7 +269,6 @@ export default function ChildView({ child, onBack }: ChildViewProps) {
               Hi {child.name}! 👋
             </h1>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-2xl">🪙</span>
               <span className="font-display font-bold text-2xl text-green-600">
                 {formatMoney(child.balance)}
               </span>
@@ -293,7 +292,7 @@ export default function ChildView({ child, onBack }: ChildViewProps) {
               value="earnings"
               className="flex-1 rounded-xl font-display font-bold text-base"
             >
-              🪙 My Earnings
+              💵 My Earnings
             </TabsTrigger>
           </TabsList>
 

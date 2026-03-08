@@ -64,7 +64,7 @@ export default function LandingPage({
           & Allowance Tracker
         </p>
         <p className="text-muted-foreground mt-2 text-lg">
-          Earn coins for doing great work! 🪙
+          Earn dollars for doing great work! 💵
         </p>
       </motion.div>
 
@@ -151,7 +151,7 @@ export default function LandingPage({
                     {child.name}
                   </span>
                   <span className="text-base font-normal text-muted-foreground">
-                    ${(Number(child.balance) / 100).toFixed(2)} 🪙
+                    ${(Number(child.balance) / 100).toFixed(2)}
                   </span>
                 </motion.button>
               ))}
