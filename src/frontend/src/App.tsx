@@ -18,7 +18,8 @@ type AppView =
   | { type: "landing" }
   | { type: "child"; child: Child }
   | { type: "parent" }
-  | { type: "profile-setup" };
+  | { type: "profile-setup" }
+  | { type: "not-admin" };
 
 export default function App() {
   const { identity, login, clear, isInitializing, isLoggingIn } =
@@ -31,24 +32,35 @@ export default function App() {
 
   const [view, setView] = useState<AppView>({ type: "landing" });
 
-  // After login, check admin + profile
+  // After login, navigate based on admin status + profile completeness.
+  // We use `identity` (not loginStatus) as the source of truth so that a
+  // transient re-initialization of the auth client never resets our view.
   useEffect(() => {
-    if (isAuthenticated && !loadingAdmin && !loadingProfile) {
-      if (isAdmin) {
-        if (!profile || !profile.name) {
-          setView({ type: "profile-setup" });
-        } else {
-          setView({ type: "parent" });
-        }
+    if (!isAuthenticated || loadingAdmin || loadingProfile) return;
+    if (isAdmin) {
+      if (!profile || !profile.name) {
+        setView({ type: "profile-setup" });
+      } else {
+        setView({ type: "parent" });
       }
+    } else {
+      // Authenticated but not an admin yet — show a helpful screen rather
+      // than silently falling back to the landing/login page.
+      setView({ type: "not-admin" });
     }
   }, [isAuthenticated, isAdmin, profile, loadingAdmin, loadingProfile]);
 
-  // If not authenticated, return to landing
+  // If truly signed out (identity gone), return protected views to landing.
+  // Guard: only trigger when isInitializing is stable-false to avoid reacting
+  // to the transient re-init that the auth client can emit after login.
   useEffect(() => {
     if (!isAuthenticated && !isInitializing) {
       setView((prev) => {
-        if (prev.type === "parent" || prev.type === "profile-setup") {
+        if (
+          prev.type === "parent" ||
+          prev.type === "profile-setup" ||
+          prev.type === "not-admin"
+        ) {
           return { type: "landing" };
         }
         return prev;
@@ -73,7 +85,10 @@ export default function App() {
     setView({ type: "parent" });
   };
 
-  // Global loading state
+  // Global loading state — only show the spinner during the very first
+  // initialisation or while fetching admin/profile after a confirmed login.
+  // We deliberately exclude the transient re-init that happens after login
+  // (identity is set, so isAuthenticated is already true by then).
   const isGlobalLoading =
     isInitializing || (isAuthenticated && (loadingAdmin || loadingProfile));
 
@@ -152,6 +167,40 @@ export default function App() {
             transition={{ duration: 0.2 }}
           >
             <ProfileSetup onComplete={handleProfileSetupComplete} />
+          </motion.div>
+        )}
+
+        {view.type === "not-admin" && (
+          <motion.div
+            key="not-admin"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="min-h-screen confetti-bg flex items-center justify-center p-6"
+          >
+            <div
+              className="bg-card border border-border rounded-2xl shadow-lg p-8 max-w-md w-full text-center"
+              data-ocid="not-admin.panel"
+            >
+              <div className="text-5xl mb-4">🔒</div>
+              <h2 className="font-display font-bold text-2xl text-foreground mb-2">
+                Not Set Up Yet
+              </h2>
+              <p className="text-muted-foreground mb-6 leading-relaxed">
+                You're logged in, but your account hasn't been set up as a
+                parent yet. Ask an existing parent to add you, or contact
+                support.
+              </p>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full bg-primary text-primary-foreground font-semibold rounded-xl py-3 px-6 hover:bg-primary/90 transition-colors"
+                data-ocid="not-admin.button"
+              >
+                Sign Out
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
